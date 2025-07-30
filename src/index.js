@@ -68,7 +68,31 @@
     return expanded
   }
 
-  const db = preprocess(require('../database/db.json'))
+  let db = preprocess(require('../database/db.json'))
+
+  const fetch = require('node-fetch');
+  /**
+   * setDatabase
+   * @param {String|Object} dataOrUrl - JSON object, JSON string, or HTTP(S) URL to a JSON file
+   * @returns {Promise<void>|void}
+   */
+  const setDatabase = (dataOrUrl) => {
+    if (typeof dataOrUrl === 'string' && /^https?:\/\//.test(dataOrUrl)) {
+      // If a URL, fetch and preprocess asynchronously
+      return fetch(dataOrUrl)
+        .then(res => res.json())
+        .then(json => { db = preprocess(json); });
+    } else if (typeof dataOrUrl === 'string') {
+      // If a JSON string, parse and preprocess
+      db = preprocess(JSON.parse(dataOrUrl));
+    } else if (typeof dataOrUrl === 'object') {
+      // If an object, preprocess directly
+      db = preprocess(dataOrUrl);
+    } else {
+      db = null;
+      throw new Error('Invalid data type for setDatabase');
+    }
+  };
 
   const resolveResultbyField = (type, searchStr, maxResult) => {
     searchStr = searchStr.toString().trim()
@@ -80,6 +104,7 @@
     }
     let possibles = []
     try {
+      if (!db) throw new Error('Database not loaded');
       possibles = db.filter(item => {
         const regex = new RegExp(searchStr, 'g')
         return (item[type] || '').toString().match(regex)
@@ -125,6 +150,7 @@
     return null
   }
 
+  exports.setDatabase = setDatabase;
   exports.searchAddressByDistrict = searchAddressByDistrict
   exports.searchAddressByAmphoe = searchAddressByAmphoe
   exports.searchAddressByProvince = searchAddressByProvince
