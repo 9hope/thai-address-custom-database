@@ -96,6 +96,68 @@ describe('#search', function () {
   })
 })
 
+describe('#search with setDatabase', function () {
+  beforeEach(function () {
+    db.setDatabase(require('../database/db.json'));
+  });
+
+  it('searchAddressByDistrict with setDatabase', function () {
+    let result = db.searchAddressByDistrict('อรัญประเทศ')
+    expect(result.length).to.equal(1)
+
+    result = db.searchAddressByDistrict(' อรัญประเทศ')
+    expect(result.length).to.equal(1)
+
+    result = db.searchAddressByDistrict('อรัญประเทศ ')
+    expect(result.length).to.equal(1)
+
+    result = db.searchAddressByDistrict('  อรัญประเทศ  ')
+    expect(result.length).to.equal(1)
+
+    result = db.searchAddressByDistrict('')
+    expect(result.length).to.equal(0)
+
+    result = db.searchAddressByDistrict('  ')
+    expect(result.length).to.equal(0)
+  });
+
+  it('searchAddressByAmphoe with setDatabase', function () {
+    let result = db.searchAddressByAmphoe('อรัญประเทศ')
+    expect(result.length).to.equal(13)
+
+    result = db.searchAddressByAmphoe('')
+    expect(result.length).to.equal(0)
+  });
+
+  it('searchAddressByProvince with setDatabase', function () {
+    let result = db.searchAddressByProvince('สระแก้ว')
+    expect(result.length).to.equal(20)
+
+    result = db.searchAddressByProvince('สระแก้ว', 10)
+    expect(result.length).to.equal(10)
+
+    result = db.searchAddressByProvince('อรัญประเทศ')
+    expect(result.length).to.equal(0)
+
+    result = db.searchAddressByProvince('')
+    expect(result.length).to.equal(0)
+  });
+
+  it('searchAddressByZipcode with setDatabase', function () {
+    let result = db.searchAddressByZipcode('27120')
+    expect(result.length).to.equal(15)
+
+    result = db.searchAddressByZipcode(27120)
+    expect(result.length).to.equal(15)
+
+    result = db.searchAddressByZipcode(27120, 5)
+    expect(result.length).to.equal(5)
+
+    result = db.searchAddressByZipcode('')
+    expect(result.length).to.equal(0)
+  });
+});
+
 describe('Function splitAddress', function () {
   it('Shoud split address without touching original address', function () {
     const addr = '126/548 ถ.สุขาประชาสรรค์ ม.การเคหะนนท์ ปากเกร็ด ปากเกร็ด นนทบุรี Thailand 11120'
