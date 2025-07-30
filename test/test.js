@@ -4,7 +4,7 @@ const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it
 const expect = require('chai').expect
-const db = require('../src/index.js')
+const db = require('../lib/index.js')
 
 describe('More then 1 zipcode District', function () {
   it('District ปราณบุรี have 2 result', function () {
