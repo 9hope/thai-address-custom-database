@@ -55,6 +55,41 @@ export default {
 </script>
 ```
 
+### Example with setDatabase
+
+```vue
+<template>
+  <div id="app">
+    <input v-model="q">
+    <ul>
+      <li v-for="item in result">
+        {{item.district}} » {{item.amphoe}} » {{item.province}} » {{item.zipcode}}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import { searchAddressByDistrict, setDatabase } from 'thai-address-database'
+
+setDatabase("https://raw.githubusercontent.com/earthchie/jquery.Thailand.js/refs/heads/master/jquery.Thailand.js/database/db.json")
+
+export default {
+  name: 'app',
+  data () {
+    return {
+      q: ''
+    }
+  },
+  computed: {
+    result () {
+      return searchAddressByDistrict(this.q)
+    }
+  }
+}
+</script>
+```
+
 ## Database & Migration
 ใน /database/raw_database มีไฟล์ฐานข้อมูลที่เป็น excel ชื่อว่า database.xlxs สามารถอัปเดทฐานข้อมูลได้ในนี้โดยเมื่ออัปเดตเรียบร้อยก็รันคำสั่ง
 
